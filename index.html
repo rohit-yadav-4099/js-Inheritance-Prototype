@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inheritance and Prototype</title>
+    <style>
+        body{
+            background-color: #c6c3c3;
+        }
+        h2{
+            color: #8b0000;
+        }
+        h3{
+            color: #006400;
+        }
+        pre{
+            font-size: larger;
+            
+        }
+        span{
+            font-size: large;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h2>Q.1- Create 2 objects - parent and child. Attach methods to parent and use those methods in child object using parents prototype</h2>
+    <h3>Ans:</h3>
+    <pre>
+        // Parent object
+        function Parent() {
+            this.name = 'Parent';
+        }
+
+        // Method attached to parent object
+
+        Parent.prototype.sayHello = function() {
+            console.log(`Hello, I'm ${this.name}`);
+        }
+
+
+        // Child object
+
+        function Child() {
+            Parent.call(this);
+        this.name = 'Child';
+        }
+
+
+        // Child object inherits from Parent prototype
+
+        Child.prototype = Object.create(Parent.prototype);
+
+
+        // Method in child object using parent prototype
+
+        Child.prototype.sayGoodbye = function() {
+        console.log(`Goodbye, I'm ${this.name}`);
+        }
+
+        // Create an instance of Child object
+
+        const child = new Child();
+
+
+        // Call the methods
+
+        child.sayHello(); 
+        child.sayGoodbye();
+    </pre>
+    <span>Output:</span>
+    <pre>
+        Hello, I'm Child
+        Goodbye, I'm Child
+    </pre>
+    <p><b>Explanation:</b> We first create a `Parent` object. This object has a `name` property.and attach a method called `sayHello` to the `Parent` object's prototype.
+        then create a `Child` object. This object inherits from the `Parent` object using `Parent.call(this)`.and set the `Child` object's prototype to be an 
+        instance of the `Parent` object's prototype using `Child.prototype = Object.create(Parent.prototype)`. and We create an instance of the `Child` object using
+         `const child = new Child();`.then call the `sayHello` and `sayGoodbye` methods on the `child` object, then get the output</p>
+
+    <h2>Q.2- Write code to explain prototype chaining</h2>
+    <h3>Ans:</h3>
+    <pre>
+        function Animal(name) {
+            this.name = name;
+          }
+          
+          Animal.prototype.speak = function() {
+            console.log(this.name + ' make a noise.');
+          };
+          
+          function Dog(name, breed) {
+            Animal.call(this, name);
+            this.breed = breed;
+          }
+          
+          Dog.prototype = Object.create(Animal.prototype);
+          Dog.prototype.constructor = Dog;
+          
+          Dog.prototype.speak = function() {
+            console.log(this.name + ' barks.');
+          };
+          
+          var res = new Dog('Fido', 'Labrador');
+          res.speak();
+    </pre>
+    <span>Output:</span>
+    <pre>
+        Fido barks.
+    </pre>
+    <p><b>Explanation:</b> In this example, we define an Animal function that sets the `name` property on instances of `Animal` and adds `speak` method to the `Animal` prototype.
+         then define a `Dog` function extends `Animal` by calling `Animal.call(this, name)`  set the `name` property on instances of `Dog`. `Dog.prototype`  a new object created with
+          `Object.create(Animal.prototype)`, prototype chain between `Dog` and `Animal`. Finally, we add a `speak` method to the `Dog` prototype that overrides the `speak` method inherited
+         from `Animal`. When create a new `Dog` instance and call its `speak` method and get the output. </p>
+
+    <h2>Q.3- Add a method to calculate sum of all elements in Array in array's protype, use that method to calculate sum for multiple arrays</h2>
+    <h3>Ans:</h3>
+    <pre>
+        // Define the sum method on the Array prototype.
+
+        Array.prototype.sum = function() {
+        return this.reduce((total, current) => total + current, 0);
+        };
+
+
+        // Create some arrays. 
+
+        const arr1 = [10, 20, 30];
+        const arr2 = [45, 85, 60];
+        const arr3 = [150, 200, 0];
+
+
+        // Calculate  sum for each array.
+
+        const sum1 = arr1.sum();
+        const sum2 = arr2.sum();
+        const sum3 = arr3.sum();
+
+
+        // results in the console.
+
+        console.log(`The sum of arr1 is ${sum1}`);
+        console.log(`The sum of arr2 is ${sum2}`);
+        console.log(`The sum of arr3 is ${sum3}`);
+    </pre>
+    <span>Output:</span>
+    <pre>
+        The sum of arr1 is 60
+        The sum of arr2 is 190
+        The sum of arr3 is 350
+    </pre>
+    <p><b>Explanation:</b> In this example, define the `sum` method on the `Array` prototype. The `reduce` method takes two arguments:(`total` and `current`) and returns the sum of the two.
+    Next, create three arrays (`arr1`, `arr2`, and `arr3`) to test the `sum` method. then call the `sum` method on each array to calculate the sum of its elements, and store the results in variables (`sum1`, `sum2`, and `sum3`). and get the output.</p>
+
+    <h2>Q.4- Write a JavaScript function to retrieve all the names of object's own and inherited properties.</h2>
+    <h3>Ans:</h3>
+    <pre>
+        
+        function allPropertyNames(obj) {
+
+            // Create an empty array to store property names
+
+            let res = [];
+  
+            
+            while (obj) {
+            
+            res = res.concat(Object.getOwnPropertyNames(obj));
+  
+           
+            obj = Object.getPrototypeOf(obj);
+            }
+  
+            // Return containing all property names
+
+            return res;
+        }
+  
+        // Create an object with some properties
+
+        const person = {
+            name: 'John',
+            age: 30
+        };
+
+
+        // Create a new object 
+
+        const employee = Object.create(person, {
+            salary: {
+            value: 50000
+            }
+        });
+
+  
+        // Call the getAllPropertyNames 
+
+        const propertyNames = allPropertyNames(employee);
+
+
+        //  property names in the console
+
+        console.log(propertyNames);
+    </pre>
+    <span>Output:</span>
+    <pre>
+        [
+        'salary',
+        'name',
+        'age',
+        'constructor',
+        '__defineGetter__',
+        '__defineSetter__',
+        'hasOwnProperty',
+        '__lookupGetter__',
+        '__lookupSetter__',
+        'isPrototypeOf',
+        'propertyIsEnumerable',
+        'toString',
+        'valueOf',
+        '__proto__',
+        'toLocaleString'
+        ]
+    </pre>
+    <p><b>Explanation:</b> In this , The `getAllPropertyNames` function takes an object as its argument and returns an array of all the property names for that object and any objects in its prototype chain.</p>
+</body>
+</html>
